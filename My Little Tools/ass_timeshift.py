@@ -3,40 +3,50 @@ import codecs  # 防止中文乱码
 import os
 
 
-def time_add(timestr, shift):
+def add_60(num, step=0):
+    '''
+    60进制加法
+    '''
+    num += step
+    step = 0
+    while True:
+        if num >= 0 and num < 60:
+            break
+        else:
+            if num < 0:
+                num += 60
+                step -= 1
+            elif num >= 60:
+                num -= 60
+                step += 1
+    return (num, step)
+
+
+def two_num(num=0):
+    '''
+    1-->'01'
+    59-->'59'
+    '''
+    if num < 10:
+        return '0'+str(num)
+    else:
+        return str(num)
+
+
+def time_add(timestr, shift=0):
     '''
     time_add是时分秒加法函数
     -60.0<shif<60.0,timestr时间字符串'x:xx:xx.xx'
     返回新时间字符串
     '''
-    newsec = float(timestr[-5:]) + shift
-    step = 0
-    if newsec < 0:
-        newsec += 60
-        step = -1
-    elif newsec >= 60:
-        newsec -= 60
-        step = 1
+    sec = float(timestr[-5:])
+    (newsec, step) = add_60(sec, shift)
     newsec = round(newsec, 2)
-    newmin = int(timestr[-8:-6]) + step
-    step = 0
-
-    if newmin < 0:
-        newmin += 60
-        step = -1
-    elif newmin >= 60:
-        newmin -= 60
-        step = 1
+    mini = int(timestr[-8:-6])
+    (newmin, step) = add_60(mini, step)
     newhour = int(timestr[:-9]) + step
-
-    if newmin < 10:
-        newmin_str = '0'+str(newmin)
-    else:
-        newmin_str = str(newmin)
-    if newsec < 10:
-        newsec_str = '0'+str(newsec)
-    else:
-        newsec_str = str(newsec)
+    newsec_str = two_num(newsec)
+    newmin_str = two_num(newmin)
     if len(newsec_str) == 4:  # 防止出现54.0这种情况
         newsec_str = newsec_str + '0'
     return str(newhour) + ':' + newmin_str + ':' + newsec_str
@@ -84,7 +94,7 @@ def get_newpath(formatpath):
     得到修改后字幕的保存路径
     '''
     pathlist = formatpath.split('/')
-    newname = '_new' + pathlist[-1]
+    newname = 'new_' + pathlist[-1]
     pathlist.pop(-1)
     pathlist.append(newname)
     newpath = '/'.join(pathlist)
@@ -95,7 +105,7 @@ if __name__ == '__main__':
     path = input('把字幕文件拖入:')
     path = windows_path(path)
     newpath = get_newpath(path)
-    shift = float(input('输入字幕时间轴位移秒数(-60,60):'))
+    shift = float(input('输入字幕时间轴位移秒数:'))
     try:
         f = codecs.open(path, 'r', 'utf_8_sig')
         nf = codecs.open(newpath, 'w', 'utf_8_sig')
