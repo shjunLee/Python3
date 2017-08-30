@@ -1,8 +1,7 @@
 '''
- * @Author: shjunlee@foxmail.com 
- * @Date: 2017-08-30 12:38:04 
- * @Last Modified by: shjun 
- * @Last Modified time: 2017-08-30 12:38:04 
+ * @Author: Joy Lee 
+ * @Contact: shjunlee@foxmail.com 
+ * @Date: 2017-08-30 14:40:57 
 '''
 from urllib.request import urlretrieve
 import requests
